@@ -6,7 +6,7 @@ RUN chown -R node:node /app
 USER node
 WORKDIR /app
 
-RUN yarn install --frozen-lockfile && \
+RUN yarn install --production --frozen-lockfile && \
     yarn cache clean
 RUN yarn build
 CMD ["yarn", "start"]
