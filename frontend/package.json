@@ -14,7 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:watchAll": "jest --watchAll",
-    "storybook": "start-storybook -p 6006 -s ./public",
+    "storybook": "start-storybook -p 6006 -s ./public --no-open",
     "build-storybook": "build-storybook -s public",
     "prepare": "cd .. && husky install"
   },
