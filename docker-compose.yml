@@ -6,7 +6,7 @@ services:
     image: nextjs_app
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: "${DOCKERFILE:-Dockerfile}"
     ports:
       - "${PORT:-3000}:3000"
 

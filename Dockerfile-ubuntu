@@ -1,0 +1,34 @@
+FROM node:16-bullseye-slim as node
+FROM ubuntu:jammy as base
+
+# ENV TINI_VERSION v0.19.0
+# ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+# RUN chmod +x /usr/bin/tini
+RUN apt-get update && \
+    apt-get -qq install -y --no-install-recommends \
+    tini=0.19.0-1 && \
+    rm -rf /var/lib/apt/lists/*
+EXPOSE 3000
+
+COPY --from=node /usr/local/include/ /usr/local/include/
+COPY --from=node /usr/local/lib/ /usr/local/lib/
+COPY --from=node /usr/local/bin/ /usr/local/bin/
+
+RUN corepack disable && corepack enable
+
+RUN groupadd --gid 1000 node && \
+    useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+
+COPY --chown=node:node ./frontend /app
+
+USER node
+WORKDIR /app
+
+RUN yarn install --ignore-scripts && \
+    yarn build && \
+    yarn install --production --ignore-scripts && \
+    yarn cache clean
+ENV NODE_ENV=production
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["yarn", "start"]

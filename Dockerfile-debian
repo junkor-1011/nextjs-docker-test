@@ -1,0 +1,18 @@
+FROM node:16-bullseye-slim
+
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+EXPOSE 3000
+
+COPY --chown=node:node ./frontend /app
+
+USER node
+WORKDIR /app
+
+RUN yarn install --ignore-scripts && \
+    yarn build && \
+    yarn install --production --ignore-scripts && \
+    yarn cache clean
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["yarn", "start"]
