@@ -6,8 +6,8 @@ RUN chown -R node:node /app
 USER node
 WORKDIR /app
 
-RUN yarn install && \
+RUN yarn install --ignore-scripts && \
     yarn build && \
-    yarn install --production && \
+    yarn install --production --ignore-scripts && \
     yarn cache clean
 CMD ["yarn", "start"]
